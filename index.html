@@ -41,65 +41,53 @@
 
 <body>
 
-  <button id="openFormBtn">Открыть форму</button>
+  <script type="module">
+    import sdk from '@pipedrive/app-extensions-sdk';
 
-  <div id="overlay"></div>
-  <iframe id="iframe" src="https://karpik11.github.io/test1-salesautomators/"></iframe>
-  
-  <!-- Замените на URL вашей формы -->
-  
-  <script>
-    import AppExtensionsSDK from '@pipedrive/app-extensions-sdk';
+    sdk.onWidgetLoad(() => {
+      // Создание кнопки для открытия формы
+      const button = document.createElement('button');
+      button.id = 'openFormBtn';
+      button.innerText = 'Открыть форму';
+      document.body.appendChild(button);
 
-// SDK detects identifier from URL and uses default custom UI size
-const sdk = await new AppExtensionsSDK().initialize();
+      const overlay = document.createElement('div');
+      overlay.id = 'overlay';
+      document.body.appendChild(overlay);
 
-// Pass in id manually and provide custom UI size
-const sdk = await new AppExtensionsSDK({ identifier: '123abc' })
-  .initialize({ size: { height: 500 } });
-    const openFormBtn = document.getElementById('openFormBtn');
-    const overlay = document.getElementById('overlay');
-    const iframe = document.getElementById('iframe');
+      const iframe = document.createElement('iframe');
+      iframe.id = 'iframe';
+      iframe.src = 'https://karpik11.github.io/test1-salesautomators/';
+      document.body.appendChild(iframe);
 
-    // Функция для открытия модального окна
-    const openModal = () => {
-      overlay.style.display = 'block';
-      iframe.style.display = 'block';
-    };
+      button.onclick = () => {
+        overlay.style.display = 'block';
+        iframe.style.display = 'block';
+      };
 
-    // Обработчик события на кнопку
-    openFormBtn.onclick = openModal;
+      overlay.onclick = () => {
+        overlay.style.display = 'none';
+        iframe.style.display = 'none';
+      };
 
-    // Закрытие модального окна при клике на оверлей
-    overlay.onclick = () => {
-      overlay.style.display = 'none';
-      iframe.style.display = 'none';
-    };
-    
-    // Добавление кнопки на страницу сделки в Pipedrive
-    Pipedrive.on('deal.show', function(dealId) {
-        // Убедитесь, что селектор правильный
-        var dealDetailsElement = document.querySelector('.deal-details');
-        if (dealDetailsElement) {
-            var button = document.createElement('button');
-            button.innerText = 'Открыть форму';
-            button.onclick = openModal; // Используем функцию открытия модального окна
-            dealDetailsElement.appendChild(button);
-        } else {
-            console.error('Элемент сделки не найден');
-        }
+      // Стилизация элементов
+      overlay.style.cssText = `display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                               background-color: rgba(0, 0, 0, 0.5); z-index: 1000;`;
+
+      iframe.style.cssText = `display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                              width: 600px; height: 400px; border: none; z-index: 1001;`;
+
+      const closeBtn = document.createElement('div');
+      closeBtn.id = 'closeBtn';
+      closeBtn.innerText = 'Закрыть';
+      closeBtn.onclick = () => {
+        overlay.style.display = 'none';
+        iframe.style.display = 'none';
+      };
+      iframe.onload = () => {
+        iframe.contentWindow.document.body.appendChild(closeBtn);
+      };
     });
-    
-    // Закрытие модального окна при клике на кнопку закрытия
-    const closeButton = document.createElement('div');
-    closeButton.id = 'closeBtn';
-    closeButton.innerText = '×';
-    closeButton.onclick = () => {
-      overlay.style.display = 'none';
-      iframe.style.display = 'none';
-    };
-    iframe.parentNode.insertBefore(closeButton, iframe.nextSibling);
-
   </script>
 
 </body>
