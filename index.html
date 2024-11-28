@@ -45,22 +45,53 @@
 
   <div id="overlay"></div>
   <iframe id="iframe" src="https://karpik11.github.io/test1-salesautomators/"></iframe>
+  
   <!-- Замените на URL вашей формы -->
-
+  
   <script>
     const openFormBtn = document.getElementById('openFormBtn');
     const overlay = document.getElementById('overlay');
     const iframe = document.getElementById('iframe');
 
-    openFormBtn.onclick = () => {
+    // Функция для открытия модального окна
+    const openModal = () => {
       overlay.style.display = 'block';
       iframe.style.display = 'block';
     };
 
+    // Обработчик события на кнопку
+    openFormBtn.onclick = openModal;
+
+    // Закрытие модального окна при клике на оверлей
     overlay.onclick = () => {
       overlay.style.display = 'none';
       iframe.style.display = 'none';
     };
+    
+    // Добавление кнопки на страницу сделки в Pipedrive
+    Pipedrive.on('deal.show', function(dealId) {
+        // Убедитесь, что селектор правильный
+        var dealDetailsElement = document.querySelector('.deal-details');
+        if (dealDetailsElement) {
+            var button = document.createElement('button');
+            button.innerText = 'Открыть форму';
+            button.onclick = openModal; // Используем функцию открытия модального окна
+            dealDetailsElement.appendChild(button);
+        } else {
+            console.error('Элемент сделки не найден');
+        }
+    });
+    
+    // Закрытие модального окна при клике на кнопку закрытия
+    const closeButton = document.createElement('div');
+    closeButton.id = 'closeBtn';
+    closeButton.innerText = '×';
+    closeButton.onclick = () => {
+      overlay.style.display = 'none';
+      iframe.style.display = 'none';
+    };
+    iframe.parentNode.insertBefore(closeButton, iframe.nextSibling);
+
   </script>
 
 </body>
