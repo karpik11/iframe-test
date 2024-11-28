@@ -80,7 +80,8 @@
       const closeBtn = document.createElement('div');
       closeBtn.id = 'closeBtn';
       closeBtn.innerText = 'Закрыть';
-      closeBtn.onclick = () => {
+      closeBtn.onclick = (event) => {
+        event.stopPropagation(); // предотвращаем событие нажатия по overlay
         overlay.style.display = 'none';
         iframe.style.display = 'none';
       };
@@ -88,6 +89,9 @@
         iframe.contentWindow.document.body.appendChild(closeBtn);
       };
     });
+
+    // Инициализация SDK
+    sdk.initialize();
   </script>
 
 </body>
